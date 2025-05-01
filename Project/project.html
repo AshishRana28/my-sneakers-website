@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nike Revolution | History & Real-time Deals</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            background-color: #f9f9f9;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #f85606;
+            border-radius: 50%;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .timeline-line {
+            position: absolute;
+            width: 2px;
+            background-color: #e5e5e5;
+            top: 0;
+            bottom: 0;
+            left: 0;
+        }
+        .swoosh-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1000px-Logo_NIKE.svg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+        .animation-container {
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 400px;
+        }
+        .deals-section {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        #shoeCanvas {
+            width: 100%;
+            height: 100%;
+        }
+        @media (max-width: 768px) {
+            .timeline-item::before {
+                left: 0;
+            }
+        }
+        /* Smooth scrolling for the entire page */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Custom Nike-themed styles */
+        .nike-orange {
+            color: #f85606;
+        }
+        .bg-nike-orange {
+            background-color: #f85606;
+        }
+        .nike-button {
+            background-color: #000;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .nike-button:hover {
+            background-color: #f85606;
+        }
+        .waffle-pattern {
+            background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 10px 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-black text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/250px-Logo_NIKE.svg.png" alt="Nike Logo" class="h-8">
+                <span class="ml-2 font-bold text-xl">REVOLUTION</span>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#history" class="hover:text-gray-300 transition">History</a>
+                <a href="#innovations" class="hover:text-gray-300 transition">Innovations</a>
+                <a href="#iconic" class="hover:text-gray-300 transition">Iconic Products</a>
+                <a href="#deals" class="hover:text-gray-300 transition">Deals</a>
+                <a href="#3dexperience" class="hover:text-gray-300 transition">3D Experience</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-toggle" class="focus:outline-none">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black text-white py-3 px-4">
+            <a href="#history" class="block py-2 hover:text-gray-300 transition">History</a>
+            <a href="#innovations" class="block py-2 hover:text-gray-300 transition">Innovations</a>
+            <a href="#iconic" class="block py-2 hover:text-gray-300 transition">Iconic Products</a>
+            <a href="#deals" class="block py-2 hover:text-gray-300 transition">Deals</a>
+            <a href="#3dexperience" class="block py-2 hover:text-gray-300 transition">3D Experience</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section py-20 md:py-32">
+        <div class="swoosh-overlay"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 md:pr-8 mb-10 md:mb-0" data-aos="fade-right">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4">NIKE REVOLUTION</h1>
+                    <p class="text-xl mb-8">Discover the legendary history of Nike, from its humble beginnings to becoming a global powerhouse in athletic footwear and apparel.</p>
+                    <div class="flex space-x-4">
+                        <a href="#history" class="nike-button px-6 py-3 rounded-full font-medium">Explore History</a>
+                        <a href="#deals" class="border-2 border-black px-6 py-3 rounded-full font-medium hover:bg-black hover:text-white transition">Shop Deals</a>
+                    </div>
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Nike_Headquarters_Oregon.jpg" alt="Nike Headquarters" class="rounded-lg shadow-2xl w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section id="history" class="py-16 relative">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold mb-12 text-center">THE NIKE STORY</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div class="md:pr-12" data-aos="fade-right">
+                    <h3 class="text-2xl font-bold mb-4">The Founding</h3>
+                    <p class="mb-6">Nike, originally known as Blue Ribbon Sports (BRS), was founded on January 25, 1964, by University of Oregon track athlete Phil Knight and his coach, Bill Bowerman. The company initially operated as a distributor for Japanese shoemaker Onitsuka Tiger, making most sales at track meets out of Knight's automobile.</p>
+                    <p class="mb-6">In its first year in business, BRS sold 1,300 pairs of Japanese running shoes, grossing $8,000. By 1965, sales had reached $20,000. In 1966, BRS opened its first retail store at 3107 Pico Boulevard in Santa Monica, California.</p>
+                    <p>The company was officially rebranded as Nike, Inc. on May 30, 1971, named after Nike, the Greek goddess of victory. The iconic Swoosh logo, designed by Carolyn Davidson (then a graphic design student at Portland State University), was first used on June 18, 1971, and registered with the U.S. Patent and Trademark Office on January 22, 1974.</p>
+                </div>
+                <div data-aos="fade-left">
+                    <img src="https://lemelson.mit.edu/sites/default/files/inventor-photos/Bowerman%3AKnight%20Sketch_0.jpeg" alt="Knight and Bowerman" class="mb-4 rounded-lg shadow-lg">
+                    <p class="text-sm text-gray-600">Bill Bowerman (right) conversing with Phil Knight (left) and other members of the Oregon track team, circa 1960s.</p>
+                </div>
+            </div>
+            <div class="my-16">
+                <h3 class="text-2xl font-bold mb-8 text-center">TIMELINE OF NIKE</h3>
+                <!-- Timeline -->
+                <div class="relative pl-8 md:pl-0 max-w-4xl mx-auto">
+                    <div class="timeline-line hidden md:block"></div>
+                    <!-- 1964 -->
+                    <div class="timeline-item relative pl-8 md:pl-20 pb-12" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">1964</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">Blue Ribbon Sports Founded</h4>
+                            <p>Phil Knight and Bill Bowerman founded Blue Ribbon Sports, initially operating as a distributor for Onitsuka Tiger (now ASICS).</p>
+                        </div>
+                    </div>
+                    <!-- 1971 -->
+                    <div class="timeline-item relative pl-8 md:pl-20 pb-12" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">1971</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">Nike Brand Launch & Swoosh Creation</h4>
+                            <p>The company officially became Nike, Inc., named after the Greek goddess of victory. The iconic Swoosh logo was designed by Carolyn Davidson for just $35.</p>
+                        </div>
+                    </div>
+                    <!-- 1972 -->
+                    <div class="timeline-item relative pl-8 md:pl-20 pb-12" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">1972</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">Waffle Trainer Introduction</h4>
+                            <p>Bill Bowerman created the first "waffle" sole using his wife's waffle iron, leading to the "Moon Shoe" and later the "Waffle Trainer" in 1974.</p>
+                        </div>
+                    </div>
+                    <!-- 1978 -->
+                    <div class="timeline-item relative pl-8 md:pl-20 pb-12" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">1978</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">Nike Becomes Blue Ribbon Sports</h4>
+                            <p>Blue Ribbon Sports officially changes its name to Nike, Inc.</p>
+                        </div>
+                    </div>
+                    <!-- 1980 -->
+                    <div class="timeline-item relative pl-8 md:pl-20 pb-12" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">1980</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">Going Public</h4>
+                            <p>Nike goes public with an initial public offering of 2 million shares of common stock.</p>
+                        </div>
+                    </div>
+                    <!-- 1987 -->
+                    <div class="timeline-item relative pl-8 md:pl-20 pb-12" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">1987</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">Air Max Launch</h4>
+                            <p>Nike introduces the Air Max 1, designed by Tinker Hatfield, featuring visible air cushioning.</p>
+                        </div>
+                    </div>
+                    <!-- 1988 -->
+                    <div class="timeline-item relative pl-8 md:pl-20 pb-12" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">1988</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">"Just Do It" Campaign</h4>
+                            <p>Nike launches its iconic "Just Do It" slogan, created by advertising agency Wieden+Kennedy, transforming the brand's marketing approach.</p>
+                        </div>
+                    </div>
+                    <!-- 2017 -->
+                    <div class="timeline-item relative pl-8 md:pl-20" data-aos="fade-up">
+                        <div class="md:absolute md:left-10 md:transform md:-translate-x-1/2 font-bold text-xl mb-2 md:mb-0">2017</div>
+                        <div class="md:ml-10">
+                            <h4 class="font-bold text-xl">Vaporfly Launch</h4>
+                            <p>Nike introduces the revolutionary Vaporfly line, featuring ZoomX foam and a carbon fiber plate, proven to improve marathon times by up to 4.2%.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Innovations Section with Waffle Pattern Background -->
+    <section id="innovations" class="py-16 waffle-pattern">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold mb-12 text-center">REVOLUTIONARY INNOVATIONS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Waffle Sole -->
+                <div class="bg-white rounded-lg p-6 shadow-md" data-aos="fade-up">
+                    <div class="mb-4">
+                        <img src="https://s3.us-east-1.amazonaws.com/vnda-cockpit/www-streetopia-me/2021/05/31/60b519657f7bbwaffle02.jpg" alt="Nike Waffle Sole" class="w-full h-48 object-cover rounded">
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">The Waffle Sole (1971)</h3>
+                    <p class="mb-6">Inspired by his wife's waffle iron, Bill Bowerman created the revolutionary waffle sole pattern for enhanced grip and lightweight performance on multiple surfaces.</p>
+                    <p class="text-sm text-gray-600">Bill Bowerman used his wife's waffle iron to experiment on rubber to create a new sole for track shoes that would grip but be lightweight and increase the runner's speed.</p>
+                </div>
+                <!-- Nike Air Technology -->
+                <div class="bg-white rounded-lg p-6 shadow-md" data-aos="fade-up" data-aos-delay="100">
+                    <div class="mb-4">
+                        <img src="https://weartesters.com/uploads/2015/03/The-Evolution-of-Visible-Air-1.jpg" alt="Nike Air Technology" class="w-full h-48 object-cover rounded">
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Nike Air Technology (1979)</h3>
+                    <p class="mb-6">Introduced in the Tailwind running shoe, Nike Air technology featured gas-filled urethane pouches that provided revolutionary cushioning for runners.</p>
+                    <p class="text-sm text-gray-600">The Air Max 1 (1987) was the first to feature a visible air unit, designed by Tinker Hatfield, who was inspired by the Centre Pompidou in Paris.</p>
+                </div>
+                <!-- Flyknit Technology -->
+                <div class="bg-white rounded-lg p-6 shadow-md" data-aos="fade-up" data-aos-delay="200">
+                    <div class="mb-4">
+                        <img src="https://s3.us-east-1.amazonaws.com/vnda-cockpit/www-streetopia-me/2021/05/31/60b512eb8bc72waffle07.jpg" alt="Nike Flyknit Technology" class="w-full h-48 object-cover rounded">
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Flyknit Technology (2012)</h3>
+                    <p class="mb-6">A revolutionary upper material created through digital knitting, Flyknit provides lightweight support and reduces material waste by 60% compared to traditional cut-and-sew methods.</p>
+                    <p class="text-sm text-gray-600">Developed over four years with programming and engineering teams, Flyknit represented Nike's commitment to sustainable innovation.</p>
+                </div>
+                <!-- ZoomX Foam -->
+                <div class="bg-white rounded-lg p-6 shadow-md" data-aos="fade-up">
+                    <div class="mb-4">
+                        <img src="https://static.nike.com/a/images/f_auto/dpr_3.0,cs_srgb/h_363,c_limit/57a5a27e-7a20-4f13-9779-91a1e57a647d/nike-debuts-its-vaporfly-3-racing-shoe.jpg" alt="Nike ZoomX Foam" class="w-full h-48 object-cover rounded">
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">ZoomX Foam & Carbon Plate (2017)</h3>
+                    <p class="mb-6">Introduced in the Vaporfly line, this combination of lightweight ZoomX foam and a carbon fiber plate revolutionized distance running, providing unprecedented energy return.</p>
+                    <p class="text-sm text-gray-600">Studies have shown these shoes can improve marathon race time by up to 4.2%, making them game-changers in competitive running.</p>
+                </div>
+                <!-- Nike Adapt (Self-Lacing) -->
+                <div class="bg-white rounded-lg p-6 shadow-md" data-aos="fade-up" data-aos-delay="100">
+                    <div class="mb-4">
+                        <img src="https://images.fastcompany.com/image/upload/f_webp,c_fit,w_1920,q_auto/wp-cms/uploads/2024/01/08-91020831-nike-air-redesign.jpg" alt="Nike Adapt Technology" class="w-full h-48 object-cover rounded">
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Nike Adapt Self-Lacing (2019)</h3>
+                    <p class="mb-6">Building on the concept first seen in Back to the Future II, Nike Adapt technology uses motors and gears to automatically adjust fit, controlled via smartphone app.</p>
+                    <p class="text-sm text-gray-600">This innovation represents Nike's push into connected footwear, merging digital technology with traditional footwear design.</p>
+                </div>
+                <!-- Sustainable Materials -->
+                <div class="bg-white rounded-lg p-6 shadow-md" data-aos="fade-up" data-aos-delay="200">
+                    <div class="mb-4">
+                        <img src="https://www.designscene.net/wp-content/uploads/2024/02/%C2%A9Nike-Air-Max-Dn-10.jpg" alt="Nike Move to Zero" class="w-full h-48 object-cover rounded">
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Move to Zero Initiative (2023)</h3>
+                    <p class="mb-6">Nike's commitment to zero carbon and zero waste, creating products using recycled materials and sustainable manufacturing processes.</p>
+                    <p class="text-sm text-gray-600">In 2023, Nike announced the transition away from kangaroo leather to proprietary synthetic materials with improved performance characteristics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Animation Section -->
+    <section id="3dexperience" class="py-16 bg-black text-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold mb-12 text-center">3D EXPERIENCE</h2>
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8" data-aos="fade-right">
+                    <h3 class="text-2xl font-bold mb-4">INTERACTIVE 3D SHOE</h3>
+                    <p class="mb-6">Experience Nike innovation like never before with our interactive 3D model. Rotate, zoom, and explore the revolutionary design elements that make Nike shoes unique.</p>
+                    <p class="mb-6">This interactive display showcases the blend of art, science, and performance that goes into every Nike product. Drag to rotate and scroll to zoom in on details.</p>
+                    <div class="flex flex-wrap gap-3 mt-8">
+                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm">Three.js Technology</span>
+                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm">Interactive 3D</span>
+                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm">WebGL Rendering</span>
+                    </div>
+                </div>
+                <div class="md:w-1/2 animation-container" data-aos="fade-left">
+                    <div id="shoeCanvas" class="w-full h-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Iconic Products Section -->
+    <section id="iconic" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold mb-12 text-center">ICONIC PRODUCTS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Air Force 1 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md card-hover" data-aos="fade-up">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/20547d52-3e1b-4c3d-b917-f0d7e0eb8bdf/custom-nike-air-force-1-low-by-you-shoes.png" alt="Nike Air Force 1" class="h-full object-contain">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">Nike Air Force 1 (1982)</h3>
+                        <p class="text-gray-700">The first basketball shoe to feature Nike Air technology, becoming one of the best-selling sneakers of all time with a rich heritage in both sports and culture.</p>
+                    </div>
+                </div>
+                <!-- Air Jordan 1 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md card-hover" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/ad4f9c72-6b83-461a-9a01-806bb0bfce95/AIR+JORDAN+1+MID.png" alt="Nike Air Jordan 1" class="h-full object-contain">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">Air Jordan 1 (1985)</h3>
+                        <p class="text-gray-700">Designed for Michael Jordan, this controversial shoe broke NBA color rules and was fined $5,000 per game. The "Banned" marketing campaign helped launch the most successful athlete-endorsed line ever.</p>
+                    </div>
+                </div>
+                <!-- Air Max 1 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md card-hover" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/e7669ab1-f716-428a-b8c3-ddc47d18b68c/NIKE+AIR+MAX+1.png" alt="Nike Air Max 1" class="h-full object-contain">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">Air Max 1 (1987)</h3>
+                        <p class="text-gray-700">Tinker Hatfield's revolutionary design featured the first visible air unit, inspired by Paris's Centre Pompidou. It launched the iconic Air Max line that continues to innovate today.</p>
+                    </div>
+                </div>
+                <!-- Nike Vaporfly -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md card-hover" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/fae635e8-6645-40a1-b686-a0326f6fcfd5/ZOOMX+VAPORFLY+NEXT%25+3+FK+PRM.png" alt="Nike ZoomX Vaporfly" class="h-full object-contain">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">Nike ZoomX Vaporfly (2017)</h3>
+                        <p class="text-gray-700">Revolutionizing marathon running with its carbon fiber plate and ZoomX foam, the Vaporfly has been proven to improve running economy by up to 4.2%, sparking debates about technological advantages in sport.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-time Deals Section -->
+    <section id="deals" class="deals-section py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 text-center">REAL-TIME DEALS</h2>
+            <p class="text-center mb-12 max-w-2xl mx-auto">Discover the latest Nike deals updated in real-time. Our system connects directly to Nike's inventory to bring you the freshest discounts on footwear, apparel, and accessories.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Deal 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md product-card" data-aos="fade-up">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/c8abb2b8-6cc2-48eb-b6e5-2d7fb7c4cf18/AIR+FORCE+1+%2707.png" alt="Nike Air Max Product" class="h-full object-contain">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-lg">Nike Air Force 1 '07</h3>
+                            <span class="bg-red-500 text-white text-sm px-2 py-1 rounded-full">40% OFF</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">Men's Shoes</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-xl font-bold">$75.97</span>
+                            <span class="text-gray-500 line-through ml-2">$125.00</span>
+                        </div>
+                        <button class="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800 transition">Shop Now</button>
+                    </div>
+                </div>
+                <!-- Deal 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md product-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/9187a933-463c-4501-8b93-244edd371f54/AIR+JORDAN+1+MID.png" alt="Nike Blazer Mid Product" class="h-full object-contain">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-lg">Nike Air Jordan 1 Mid</h3>
+                            <span class="bg-red-500 text-white text-sm px-2 py-1 rounded-full">30% OFF</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">Men's Shoes</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-xl font-bold">$102.97</span>
+                            <span class="text-gray-500 line-through ml-2">$145.00</span>
+                        </div>
+                        <button class="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800 transition">Shop Now</button>
+                    </div>
+                </div>
+                <!-- Deal 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md product-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="https://static.nike.com/a/images/t_PDP_936_v1/f_auto,q_auto:eco/fae635e8-6645-40a1-b686-a0326f6fcfd5/ZOOMX+VAPORFLY+NEXT%25+3+FK+PRM.png" alt="Nike Sportswear Product" class="h-full object-contain">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-lg">Nike Vaporfly Next% 3</h3>
+                            <span class="bg-red-500 text-white text-sm px-2 py-1 rounded-full">25% OFF</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">Running Shoes</p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-xl font-bold">$187.50</span>
+                            <span class="text-gray-500 line-through ml-2">$250.00</span>
+                        </div>
+                        <button class="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800 transition">Shop Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="#" class="bg-black text-white px-8 py-3 rounded-full hover:bg-gray-800 transition">View All Deals</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="bg-black text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4">JOIN THE REVOLUTION</h2>
+                <p class="mb-8">Sign up to receive updates on new releases, exclusive deals, and Nike history.</p>
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <input type="email" placeholder="Your email address" class="px-4 py-3 rounded-full bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-white w-full md:w-auto">
+                    <button class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-gray-200 transition">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4">ABOUT NIKE</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-gray-300 transition">News</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Investors</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Sustainability</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">PRODUCTS</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-gray-300 transition">Shoes</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Clothing</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Accessories</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Collections</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">HELP</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-gray-300 transition">Order Status</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Shipping & Delivery</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Returns</a></li>
+                        <li><a href="#" class="hover:text-gray-300 transition">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">CONNECT</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="hover:text-gray-300 transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="hover:text-gray-300 transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="hover:text-gray-300 transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-sm text-gray-400">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p>© 2025 Nike, Inc. All Rights Reserved</p>
+                    <div class="flex space-x-6 mt-4 md:mt-0">
+                        <a href="#" class="hover:text-white transition">Terms of Use</a>
+                        <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    </div>
+                    <p class="mt-4 md:mt-0">Created for Nike Revolution</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Mobile Menu Toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Three.js 3D Shoe Animation - Enhanced for better performance and visuals
+        function init3DShoe() {
+            // Create scene
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            // Create camera with better positioning
+            const container = document.getElementById('shoeCanvas');
+            const camera = new THREE.PerspectiveCamera(
+                75, 
+                container.clientWidth / container.clientHeight, 
+                0.1, 
+                1000
+            );
+            camera.position.z = 5;
+            camera.position.y = 0.5;
+
+            // Create renderer with improved settings
+            const renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Add enhanced lighting for better visual appeal
+            const ambientLight = new THREE.AmbientLight(0x404040, 2);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(0, 1, 1);
+            scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0xff9900, 2, 100);
+            pointLight.position.set(5, 3, 5);
+            scene.add(pointLight);
+
+            // Add another point light from a different angle for better highlights
+            const pointLight2 = new THREE.PointLight(0x0066ff, 1.5, 100);
+            pointLight2.position.set(-5, 2, -3);
+            scene.add(pointLight2);
+
+            // Create a more detailed stylized Nike shoe shape
+            const shoeGroup = new THREE.Group();
+
+            // Shoe base/sole with improved geometry
+            const soleGeometry = new THREE.BoxGeometry(3, 0.3, 1.2);
+            const soleCurve = new THREE.BoxGeometry(0.6, 0.2, 1.2);
+            
+            // Create materials with better visual properties
+            const soleMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x333333,
+                roughness: 0.5,
+                metalness: 0.2
+            });
+            
+            const sole = new THREE.Mesh(soleGeometry, soleMaterial);
+            sole.position.y = -0.2;
+            shoeGroup.add(sole);
+            
+            // Add sole curve at the heel
+            const soleCurveMesh = new THREE.Mesh(soleCurve, soleMaterial);
+            soleCurveMesh.position.set(-1.5, -0.05, 0);
+            shoeGroup.add(soleCurveMesh);
+
+            // Shoe body with more vibrant Nike-style color
+            const bodyGeometry = new THREE.BoxGeometry(2.8, 0.8, 1);
+            const bodyMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xf85606, // Nike orange
+                roughness: 0.3,
+                metalness: 0.1
+            });
+            
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.position.y = 0.4;
+            shoeGroup.add(body);
+
+            // More detailed toe area
+            const toeGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+            const toeMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xf85606,
+                roughness: 0.3,
+                metalness: 0.1
+            });
+            
+            const toe = new THREE.Mesh(toeGeometry, toeMaterial);
+            toe.position.set(1.5, 0.3, 0);
+            toe.scale.set(1, 0.5, 1);
+            shoeGroup.add(toe);
+
+            // Enhanced heel area
+            const heelGeometry = new THREE.BoxGeometry(0.6, 1, 1);
+            const heelMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x222222,
+                roughness: 0.4,
+                metalness: 0.2
+            });
+            
+            const heel = new THREE.Mesh(heelGeometry, heelMaterial);
+            heel.position.set(-1.3, 0.35, 0);
+            shoeGroup.add(heel);
+
+            // Create a more detailed Nike swoosh
+            // Using a custom path for better swoosh shape
+            const swooshShape = new THREE.Shape();
+            swooshShape.moveTo(0, 0);
+            swooshShape.bezierCurveTo(0.2, 0.1, 0.4, 0.2, 0.8, 0);
+            swooshShape.bezierCurveTo(0.6, -0.3, 0.1, -0.5, -0.3, -0.1);
+            swooshShape.bezierCurveTo(-0.2, -0.05, -0.1, 0, 0, 0);
+
+            const extrudeSettings = {
+                steps: 1,
+                depth: 0.05,
+                bevelEnabled: false
+            };
+
+            const swooshGeometry = new THREE.ExtrudeGeometry(swooshShape, extrudeSettings);
+            const swooshMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xffffff,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+            
+            const swoosh = new THREE.Mesh(swooshGeometry, swooshMaterial);
+            swoosh.position.set(0.1, 0.6, 0.51);
+            swoosh.rotation.z = Math.PI / 12;
+            swoosh.scale.set(1, 1, 1);
+            shoeGroup.add(swoosh);
+
+            // Add shoe laces
+            const laceGeometry = new THREE.BoxGeometry(0.05, 0.05, 0.8);
+            const laceMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            
+            // Create multiple laces
+            for (let i = -0.5; i <= 0.5; i += 0.25) {
+                const lace = new THREE.Mesh(laceGeometry, laceMaterial);
+                lace.position.set(i, 0.8, 0);
+                shoeGroup.add(lace);
+            }
+
+            // Add details to the sole - waffle pattern
+            const waffleGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+            const waffleMaterial = new THREE.MeshStandardMaterial({ color: 0x222222 });
+            
+            // Create pattern on bottom of shoe
+            for (let x = -1.3; x <= 1.3; x += 0.3) {
+                for (let z = -0.5; z <= 0.5; z += 0.3) {
+                    const waffleNode = new THREE.Mesh(waffleGeometry, waffleMaterial);
+                    waffleNode.position.set(x, -0.4, z);
+                    shoeGroup.add(waffleNode);
+                }
+            }
+
+            // Add Nike logo on heel
+            const nikeTextGeometry = new THREE.BoxGeometry(0.4, 0.1, 0.05);
+            const nikeTextMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const nikeText = new THREE.Mesh(nikeTextGeometry, nikeTextMaterial);
+            nikeText.position.set(-1.3, 0.7, 0.5);
+            shoeGroup.add(nikeText);
+
+            // Add shoe to scene with a slight rotation for better initial view
+            shoeGroup.rotation.y = -Math.PI / 6;
+            scene.add(shoeGroup);
+
+            // Add improved OrbitControls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = true;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 1.5;
+            controls.minDistance = 3;
+            controls.maxDistance = 10;
+
+            // Handle window resize with more efficient event listener
+            const resizeObserver = new ResizeObserver(() => {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            });
+            
+            resizeObserver.observe(container);
+
+            // Animation loop with enhanced performance
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                
+                // Add subtle breathing animation to the shoe
+                shoeGroup.position.y = Math.sin(Date.now() * 0.001) * 0.05;
+                
+                renderer.render(scene, camera);
+            }
+
+            // Start animation
+            animate();
+        }
+
+        // Real-time deals update simulation
+        function simulateRealTimeDeals() {
+            const products = [
+                {
+                    name: "Nike Air Force 1 '07",
+                    category: "Men's Shoes",
+                    price: 75.97,
+                    originalPrice: 125.00,
+                    discount: "40% OFF"
+                },
+                {
+                    name: "Nike Air Jordan 1 Mid",
+                    category: "Men's Shoes",
+                    price: 102.97,
+                    originalPrice: 145.00,
+                    discount: "30% OFF"
+                },
+                {
+                    name: "Nike Vaporfly Next% 3",
+                    category: "Running Shoes",
+                    price: 187.50,
+                    originalPrice: 250.00,
+                    discount: "25% OFF"
+                }
+            ];
+            
+            console.log("Real-time deals loaded:", products.length);
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize 3D shoe
+            init3DShoe();
+            
+            // Simulate real-time deals
+            simulateRealTimeDeals();
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
